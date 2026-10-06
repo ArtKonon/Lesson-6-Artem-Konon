@@ -19,25 +19,28 @@
 
 ## Function under test
 
-<!-- e.g. `func ValidateEmail(s string) bool` from validate/validate.go -->
+func LoadTodos(path string) ([]Todo, error)
 
 ## Prompt you gave the AI
 
-<!-- Paste the exact prompt you used. -->
+generate a full table-driven test suite for that signature. No questions.
 
 ## Edge cases the AI found that you had missed
 
-<!-- List them, and say whether they exposed a real bug. -->
+Після того, як я спитав у ШІ, чи є в нього питання стосовно граничних випадків, які я можливо пропустив, він почав задавати питання стосовно мого проекту, тести для якого він написав, генеруючи припущення. 
+
+По пунктах: 1) Шлях вказує на директорію, а не на файл:, 2) Відсутність прав доступу (Permission Denied):, 3) Відмінність між null, порожнім масивом [] та порожнім файлом:, 4) Невідповідність типів структури (JSON Object замість Array):, 5) Частково некоректні дані у структурі (Partial Fields):, 6) Символічні посилання (Symlinks) та біті шляхи:, 7) Файли з Byte Order Mark (UTF-8 BOM)
 
 ## Edge cases you had that the AI missed
 
-<!-- List them, and say why you think the AI didn't think of them. -->
+Так як у ШІ не було контексту, він його додумав самостійно. Відповідно можна стверджувати, що він або відхилився від концепції завдання, або створив свою, хоч й дотичну.
 
 ## Cases where the AI's expected output was wrong
 
-<!-- AI can be confidently wrong about what the "correct" output should
-     be — did that happen here? -->
+ШІ не використав бібліотеку time, хоча в оригінальних тестах вона задіяна. Проте натомість він застосував reflect, аргументуючи це тим, що в Go зрізи та масиви ([]Todo) еможливо порівняти напряму через стандартний оператор рівності (==). Використав reflect.DeepEqual. 
+
+А Time потрібен для роботи з часом - затримки, таймаути і тд. "Функція LoadTodos(path string) виконує звичайну синхронну операцію зчитування файлу та розпаршування JSON. Тут немає асинхронного коду, контекстів з обмеженням за часом чи часових затримок". 
 
 ## What you'd change about your own test-writing process after this
 
-<!-- A few sentences of reflection. -->
+Буду давати ще більше контексту ШІ, буду прописувати, щоб він задавав уточнюючі питання. Буду використовувати також бібліотеку reflect.
